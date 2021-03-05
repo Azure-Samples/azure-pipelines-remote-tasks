@@ -19,9 +19,9 @@ stages:
     - job: git_test
       steps:
         # Running the template from the same repsitory
-        - template: templates/python-tasks.yaml
+        - template: templates/hello-alpha.yaml
         # Checkout the remote repository
         - checkout: remoteRepo
           persistCredentials: true
         # Call the template that is located in another repository in another orgnization
-        - template: templates/install-software.yaml@remoteRepo
+        - template: templates/hello-beta.yaml@remoteRepo

@@ -13,3 +13,7 @@ This document is a guide on how to create a personal access token that has only 
 3. The token is shown in the list of available tokens for the user that created it.
 
     ![image.png](./assets/available-tokens.png)
+
+## References
+
+[Learn more about PAT and how to set it up](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page)
