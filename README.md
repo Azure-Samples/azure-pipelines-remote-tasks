@@ -1,57 +1,112 @@
-# Project Name
+---
+page_type: sample
+languages:
+- python
+- yaml
+products:
+- azure
+- azure-devops
+name: Execute pipeline tasks from different Azure DevOps Organizations
+description: "This sample guide demonstrates how to execute pipeline tasks that are in different Azure DevOps Organizations."
+urlFragment: "azure-pipeline-remote-tasks"
+---
 
-(short, 1-3 sentenced, description of the project)
+# Executing Pipeline Tasks from Different Azure DevOps Organizations
 
-## Features
+## Overview
 
-This project framework provides the following features:
+Azure DevOps pipelines can reference pipeline `jobs` and `tasks` from repositories in [other organizations](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories) via a `template`.
 
-* Feature 1
-* Feature 2
-* ...
+This sample app demonstrates how to use and call Azure Pipelines tasks template that exists in different Azure DevOps organization. The pipeline calls two different templates, one which is in the same repository and the other which is stored in a different Azure DevOps organization.
 
 ## Getting Started
 
+### Folder Structure
+
+Here's the folder structure for the sample:
+
+- `build`
+  - `azure-pipelines.yaml` - Main Azure Pipelines yaml file to create pipeline
+- `templates`
+  - `python-tasks.yaml` - Template file in the same repository to run a task
+
 ### Prerequisites
 
-(ideally very short, if any)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Azure Subscription](https://azure.microsoft.com/en-us/)
+- [Github Account](https://github.com/)
+- [Azure Devops Account](https://www.dev.azure.com/)
 
-- OS
-- Library version
-- ...
+### Running the Sample
 
-### Installation
+To run this sample, follow the steps below:
 
-(ideally very short)
+1. Fork this repository
 
-- npm install [package name]
-- mvn install
-- ...
+2. Clone the repository using: `git clone https://github.com/Azure-Samples/azure-pipeline-tasks.git`
 
-### Quickstart
-(Add steps to get up and running quickly)
+3. Given that you have tasks that need to be referenced from a different organization that you are running your pipeline in, the following is needed to get set up:
 
-1. git clone [repository clone url]
-2. cd [respository name]
-3. ...
+   - Create a new service connection of type `Azure Repos/Team Foundation Server` which will define and secure connection to another Azure DevOps organization or follow [this guide here](./docs/guide-to-setup-service-connection.md) on how to create it.
+   - To authenticate access with personal access tokens, please see [the guide here](./docs/guide-to-creating-a-pat.md). This PAT can be used when setting up the service connection.
 
+4. Create your pipeline in Azure Pipelines using existing the `azure-pipelines.yaml` file. For more instructions on how to create a pipeline, please see [this guide](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=python%2Ctfs-2018-2%2Cbrowser#create-your-first-python-pipeline)
 
-## Demo
+5. Run your pipeline. The pipeline output of a successful run will look like below:
 
-A demo app is included to show how to use the project.
+    ![pipeline](./docs/assets/remote-repo-pipeline.png)
 
-To run the demo, follow these steps:
+## Referencing pipeline steps
 
-(Add steps to start up the demo)
+For repositories in the same repository, the `yaml` file containing the pipeline steps is referenced via the `template` step(s):
 
-1.
-2.
-3.
+```yaml
+steps:
+- template: templates/python-tasks.yaml
+```
 
-## Resources
+For files in repositories that are in another organization, a [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) of type `Azure Repos/Team Foundation Server` is required to access the organization. For a guide on how to set this up, [follow this document](./docs/guide-to-setup-service-connection.md)
 
-(Any additional resources or related projects)
+## Configuring access to other organizations
 
-- Link to supporting information
-- Link to similar sample
-- ...
+The pipeline references the service connection through a `resource` where the `endpoint` points to a service connection configured in this organization. The `repository` keyword lets you specify an external repository.
+
+```yaml
+resources:
+  repositories: 
+    - repository: remoteRepo # Simple name to reference this repository at a later step
+      type: git
+      name: project-name/repo-name
+      endpoint: remote-git-connection # Azure DevOps service connection
+      ref: refs/heads/main 
+      
+# Note: When referencing a repository in another organization, branches may need to be set explicitly using `ref` in the repository definition even when a file is located in the other organization's default branch.
+```
+
+The `template` then references this repository resource by adding the repository reference to the file reference:
+
+```yaml
+# The template install-software.yaml is stored in a repository and is being called from a piepline that exists in another repository. The syntax of using @remoteRepo allows the calling piepline to get the remoteRepo reference that was defined above and resolve it.
+
+- template: templates/install-software.yaml@remoteRepo
+```
+
+To see the full contents of the `templates/install-software.yaml`, please see the [code sample section](#code-sample)
+
+## References
+
+- [How to create and configure a Personal Access Token (PAT)](./docs/guide-to-creating-a-pat.md)
+- [How to setup a service connection](./docs/guide-to-setup-service-connection.md)
+
+## Code Sample
+
+See below for the sample template `templates/install-software.yaml` file that install and runs azurite and is located in another organization under `project-name/repo-name`:
+
+```yaml
+steps:  
+- bash: |
+    sudo npm install -g azurite
+    sudo mkdir azurite
+    sudo azurite --silent --location azurite --debug azurite\debug.log &
+  displayName: 'Install and Run Azurite'
+```
