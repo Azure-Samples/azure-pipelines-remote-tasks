@@ -27,8 +27,8 @@ Here's the folder structure for the sample:
 
 - `build`
   - `azure-pipelines.yaml` - Main Azure Pipelines yaml file to create pipeline
-- `templates`
-  - `python-tasks.yaml` - Template file in the same repository to run a task
+  - `templates`
+    - `python-tasks.yaml` - Template file in the same repository to run a task
 
 ### Prerequisites
 
@@ -48,7 +48,7 @@ To run this sample, follow the steps below:
 3. Given that you have tasks that need to be referenced from a different organization that you are running your pipeline in, the following is needed to get set up:
 
    - Create a new service connection of type `Azure Repos/Team Foundation Server` which will define and secure connection to another Azure DevOps organization or follow [this guide here](./docs/guide-to-setup-service-connection.md) on how to create it.
-   - To authenticate access with personal access tokens, please see [the guide here](./docs/guide-to-creating-a-pat.md). This PAT can be used when setting up the service connection.
+   - To authenticate using Personal Access Tokens (PAT), please see [the guide here](./docs/guide-to-creating-a-pat.md). This PAT can be used when setting up the service connection.
 
 4. Create your pipeline in Azure Pipelines using existing the `azure-pipelines.yaml` file. For more instructions on how to create a pipeline, please see [this guide](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=python%2Ctfs-2018-2%2Cbrowser#create-your-first-python-pipeline)
 
@@ -80,13 +80,17 @@ resources:
       endpoint: remote-git-connection # Azure DevOps service connection
       ref: refs/heads/main 
       
-# Note: When referencing a repository in another organization, branches may need to be set explicitly using `ref` in the repository definition even when a file is located in the other organization's default branch.
+# Note: When referencing a repository in another organization, branches may need to be set explicitly using `ref` in the repository definition. 
+
+# It may be necessary to do even when a file is located in the other organization's default branch.
 ```
 
 The `template` then references this repository resource by adding the repository reference to the file reference:
 
 ```yaml
-# The template install-software.yaml is stored in a repository and is being called from a piepline that exists in another repository. The syntax of using @remoteRepo allows the calling piepline to get the remoteRepo reference that was defined above and resolve it.
+# The template install-software.yaml is stored in a repository and is being called from a piepline that exists in another repository. 
+
+# The syntax of using @remoteRepo allows the calling pipeline to get the remoteRepo reference that was defined above and resolve it.
 
 - template: templates/install-software.yaml@remoteRepo
 ```
@@ -100,7 +104,7 @@ To see the full contents of the `templates/install-software.yaml`, please see th
 
 ## Code Sample
 
-See below for the sample template `templates/install-software.yaml` file that install and runs azurite and is located in another organization under `project-name/repo-name`:
+See below the template `templates/install-software.yaml` file that installs and runs azurite and is located in another organization under `project-name/repo-name`:
 
 ```yaml
 steps:  

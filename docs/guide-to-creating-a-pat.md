@@ -13,13 +13,3 @@ This document is a guide on how to create a personal access token that has only 
 3. The token is shown in the list of available tokens for the user that created it.
 
     ![image.png](./assets/available-tokens.png)
-
-## Configuring a service connection to a repository in another organization
-
-1. After the PAT is created, we can now create the service connection in the `Project Settings` for the organization with the "calling" pipeline:
-
-    ![image.png](./assets/configure-access.png)
-
-2. The service connection can be configured to access the other organization with token based or basic  (username / password) authentication.
-
-    ![image.png](./assets/project-settings.png)
