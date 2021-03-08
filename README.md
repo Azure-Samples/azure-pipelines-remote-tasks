@@ -64,7 +64,7 @@ Please see [the guide here](./docs/guide-create-pat.md). This PAT can be used wh
 
 ## Referencing pipeline steps
 
-For repositories in the same repository, the `yaml` file containing the pipeline steps is referenced via the `template` step(s):
+For templates in the same repository, the `yaml` file containing the pipeline steps is referenced via the `template` step(s):
 
 ```yaml
 steps:
