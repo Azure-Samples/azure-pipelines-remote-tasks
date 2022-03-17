@@ -4,7 +4,7 @@ The service connection of type `Azure Repos/Team Foundation Server` is required 
 
 ![image.png](./assets/service-connection-type.png)
 
-1. The connection is configured with a token based or username/password based authentication that has the appropriate permissions. For details on how to setup the personal access token, please see [this guide](./guide-create-pat.md). This token should be creating in the other organization that you are trying to access which has the templates or tasks that you need to run.
+1. The connection is configured with a token based or username/password based authentication that has the appropriate permissions. For details on how to setup the personal access token, please see [this guide](./guide-create-pat.md). This token should be created in the other organization that you are trying to access which has the templates or tasks that you need to run.
 
 2. After you have created the token, go to the `Project settings` in the target organization where the pipeline is being run.
 
